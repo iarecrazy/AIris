@@ -141,6 +141,9 @@ class BoundingBoxEventHandler(ViewEventHandler):
 
 	def __init__(self, view):
 		super().__init__(view)
+		self.arrowCursor 	= QCursor(Qt.ArrowCursor)
+		self.dragCursor 	= QCursor(Qt.SizeAllCursor)
+
 		self.mode 			= BoundingBoxEventHandler.Mode.NONE
 		self.boundingRect 	= None
 
@@ -175,6 +178,7 @@ class BoundingBoxEventHandler(ViewEventHandler):
 			elif(self.wasMiddleButtonPressed(currentState, previousState)):
 				if(self.Mode == BoundingBoxEventHandler.Mode.HOVER):
 					self.Mode = BoundingBoxEventHandler.Mode.DRAG
+					self.view.setCursor(self.dragCursor)
 			
 			# if the right button was pressed do nothing for now
 			elif(self.wasRightButtonPressed(currentState, previousState)):
@@ -227,3 +231,5 @@ class BoundingBoxEventHandler(ViewEventHandler):
 		if(self.Mode == BoundingBoxEventHandler.Mode.DRAG):
 			if(self.wasMiddleButtonReleased(currentState, previousState)):
 				self.Mode 			= BoundingBoxEventHandler.Mode.HOVER
+				self.view.setCursor(self.arrowCursor)
+
