@@ -1,6 +1,13 @@
 import sys
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+
+class ImageView(QGraphicsView):
+	def resizeEvent(self, resizeEvent):
+		super().resizeEvent(resizeEvent)
+		self.fitInView(self.sceneRect(), Qt.KeepAspectRatio)
+		# self.fixBackgroundPos()
 
 class Application:
 	
@@ -9,34 +16,48 @@ class Application:
 		self.createMainWindow()
 		self.app.setWindowIcon(QIcon("img/icon.png"))
 
+	def loadPixmapFromImage(self, filename):
+		return QGraphicsPixmapItem(QPixmap(filename)) 
 
 	def createMainWindow(self):
+		# create the main window
 		self.win	= QWidget()
 
-		grid 		= QGridLayout(self.win)
+		# add the grid for layouting
+		self.grid 	= QGridLayout(self.win)
 
-		label	= QLabel("2")
+		# annotation item list
+		self.itemListLabel = QLabel("Annotation Files")
+		self.itemList = QListWidget()
 
-		color = QColor(255, 0, 0)
-		label.setStyleSheet('.QLabel{{background: rgb({}, {}, {});}}'.format(color.red(), color.green(), color.blue()))
+		imagePixItem = QGraphicsPixmapItem(QPixmap("img/angio.jpg")) 
 
-		label2	= QLabel("2")
-		color = QColor(0, 255, 0)
-		label2.setStyleSheet('.QLabel{{background: rgb({}, {}, {});}}'.format(color.red(), color.green(), color.blue()))
+		width 	= imagePixItem.pixmap().width()
+		height 	= imagePixItem.pixmap().height()
 
-		label3	= QLabel("3")
-		color = QColor(0,0,255)
-		label3.setStyleSheet('.QLabel{{background: rgb({}, {}, {});}}'.format(color.red(), color.green(), color.blue()))
+		scene = QGraphicsScene()
+		scene.addItem(imagePixItem)
 
-		label4	= QLabel("4")
-		color = QColor(255,255,255)
-		label4.setStyleSheet('.QLabel{{background: rgb({}, {}, {});}}'.format(color.red(), color.green(), color.blue()))
+		# create canvas for showing image in
+		self.imageView = ImageView(scene)
+		self.imageView.setBackgroundBrush(QBrush(Qt.black, Qt.SolidPattern));
+
+		# create a list for showing image labels in
+		self.labelListLabel = QLabel("Label list")
+		self.labelList 		= QListWidget()
 
 		# grid.addWidget(widget, row, column, rowSpan, colSpan)
-		grid.addWidget(label 	, 0, 0)
-		grid.addWidget(label2	, 0, 1, 1, 3)
-		grid.addWidget(label3	, 1, 0, 1, 2)
-		grid.addWidget(label4	, 1, 2, 1, 2)
+		self.grid.addWidget(self.itemListLabel	, 0, 0)
+		self.grid.addWidget(self.labelListLabel	, 0, 2)
+
+		# grid.addWidget(widget, row, column, rowSpan, colSpan)
+		self.grid.addWidget(self.itemList	, 1, 0)
+		self.grid.addWidget(self.imageView 	, 1, 1)
+		self.grid.addWidget(self.labelList	, 1, 2)
+
+		self.grid.setColumnStretch(0, 5)
+		self.grid.setColumnStretch(1, 20)
+		self.grid.setColumnStretch(2, 5)
 
 		self.win.setGeometry(200, 100, 1000, 600)
 		self.win.setWindowTitle("AIris")
