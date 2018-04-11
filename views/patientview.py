@@ -24,13 +24,13 @@ class RepoView:
 			gridLayout.addWidget(QLabel("Procedure:"), 1, 0, 1, 1, Qt.AlignRight)
 			gridLayout.addWidget(self.procCombo, 1, 1)
 
-			self.runsLabel = QLabel("Number of Runs:")
-			gridLayout.addWidget(self.runsLabel, 2, 0, 1, 1, Qt.AlignRight)
-			gridLayout.addWidget(QLabel("-"), 2, 1)
+			self.runsLabel = QLabel("-")
+			gridLayout.addWidget(QLabel("Number of Runs:"), 2, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.runsLabel, 2, 1)
 
-			self.annotationLabel = QLabel("Contains Annotations:")
-			gridLayout.addWidget(self.annotationLabel, 3, 0, 1, 1, Qt.AlignRight)
-			gridLayout.addWidget(QLabel("-"), 3, 1)
+			self.annotationLabel = QLabel("-")
+			gridLayout.addWidget(QLabel("Contains Annotations:"), 3, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.annotationLabel, 3, 1)
 
 			gridLayout.setColumnStretch	(1, 1)
 			gridLayout.setRowStretch	(4, 1)
@@ -114,11 +114,16 @@ class RepoView:
 		selectionModel = self.patientTable.selectionModel()
 		selectionModel.selectionChanged.connect(self.selectionChanged)
 
+		rightPanel = QVBoxLayout()
 		patientLayout = QHBoxLayout()
-
 		patientLayout.addWidget(patientTable)
-		self.patientEditView = RepoView.PatientEditView(patientLayout, self.repo, self.patientTable)
+		patientLayout.setStretch(0, 1)
+		patientLayout.addLayout(rightPanel)
 
+		self.patientEditView = RepoView.PatientEditView(rightPanel, self.repo, self.patientTable)
+
+		rightPanel.addWidget(QLabel("test"))
+		
 		boxLayout.addLayout(patientLayout)
 		boxLayout.addWidget(QLabel("Patient Runs"))
 		boxLayout.addWidget(l)
