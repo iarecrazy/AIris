@@ -1,5 +1,11 @@
 import sys
-# from application import Application
+
+# modify the search path so we can import files from multiple directories
+sys.path.insert(0, './views')
+sys.path.insert(0, './models')
+
+from patientview import *
+from patientrepository import *
 
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -7,37 +13,8 @@ from PyQt5.QtCore import *
 
 def createCentralWidget(mainWindow):
 	w = QWidget(mainWindow)
-
-	l = QListWidget(w)
-	l.setViewMode(QListWidget.IconMode)
-	l.setIconSize(QSize(100, 100))
-	l.setFlow(QListView.LeftToRight)
-	l.setMovement(QListView.Static)
-	l.setWrapping(False)
-	l.setResizeMode(QListWidget.Adjust)
-
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 1"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 2"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 3"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 4"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 5"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 6"));
-
-	# force height to be exactly 130
-	l.setFixedHeight(130)
-
-	# layout the main panel
-	boxLayout = QVBoxLayout(w)
-	boxLayout.addWidget(QPushButton("Hello"))
-	# stretch pushes both items to the extreme top and bottom
-	boxLayout.addStretch()
-
-	boxLayout.addWidget(QLabel("Patient Runs"))
-	boxLayout.addWidget(l)
-
-	mainWin.setCentralWidget(w)
-	
-	return l
+	mainWin.setCentralWidgselectionChangedt(w)
+	return w
 
 def createNavigationToolBar(mainWindow):
 	# load the patient icon
@@ -51,7 +28,6 @@ def createNavigationToolBar(mainWindow):
 	return t
 
 if __name__ == '__main__':
-
 	app = QApplication(sys.argv)
 	app.setWindowIcon(QIcon("img/icon.png"))
 	
@@ -61,13 +37,16 @@ if __name__ == '__main__':
 	mainWin.setWindowTitle("AIris")
 
 	# content widget
-	centralWidget 		= createCentralWidget		(mainWin)
-	navigationToolBar	= createNavigationToolBar 	(mainWin)
+	centralWidget 		= QWidget (mainWin)
+	toolBar 			= QToolBar(mainWin)
+	toolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
+	mainWin.addToolBar(toolBar)
+	mainWin.setCentralWidget(centralWidget)
 
+	patientRepository = PatientRepositoryStub()
+	patientView = PatientView(centralWidget, toolBar, patientRepository)
+	patientView.show()
 
 	mainWin.show()
 	sys.exit(app.exec_())	
-
-	# a = Application()
-	# a.run()
