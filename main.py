@@ -6,8 +6,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 def createCentralWidget(mainWindow):
-	# w = QWidget(mainWindow)
-	l = QListWidget(mainWindow)
+	w = QWidget(mainWindow)
+
+	l = QListWidget(w)
 	l.setViewMode(QListWidget.IconMode)
 	l.setIconSize(QSize(100, 100))
 	l.setFlow(QListView.LeftToRight)
@@ -15,13 +16,27 @@ def createCentralWidget(mainWindow):
 	l.setWrapping(False)
 	l.setResizeMode(QListWidget.Adjust)
 
-	l.addItem(QListWidgetItem(QIcon("img/icon.png"),"Earth"));
-	l.addItem(QListWidgetItem(QIcon("img/icon.patient.png"),"Tornado"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Wallpaper"));
-	l.addItem(QListWidgetItem(QIcon("img/icon.png"),"Earth"));
-	l.addItem(QListWidgetItem(QIcon("img/icon.patient.png"),"Tornado"));
-	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Wallpaper"));
-	mainWin.setCentralWidget(l)
+	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 1"));
+	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 2"));
+	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 3"));
+	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 4"));
+	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 5"));
+	l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 6"));
+
+	# force height to be exactly 130
+	l.setFixedHeight(130)
+
+	# layout the main panel
+	boxLayout = QVBoxLayout(w)
+	boxLayout.addWidget(QPushButton("Hello"))
+	# stretch pushes both items to the extreme top and bottom
+	boxLayout.addStretch()
+
+	boxLayout.addWidget(QLabel("Patient Runs"))
+	boxLayout.addWidget(l)
+
+	mainWin.setCentralWidget(w)
+	
 	return l
 
 def createNavigationToolBar(mainWindow):
