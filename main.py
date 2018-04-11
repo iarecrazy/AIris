@@ -45,8 +45,8 @@ if __name__ == '__main__':
 	mainWin.setCentralWidget(centralWidget)
 
 	patientRepository = PatientRepositoryStub()
-	patientView = PatientView(centralWidget, toolBar, patientRepository)
-	patientView.show()
+	patientRepoView = RepoView(centralWidget, toolBar, patientRepository)
+	patientRepoView.show()
 
 	mainWin.show()
 	sys.exit(app.exec_())	

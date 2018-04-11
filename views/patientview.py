@@ -3,7 +3,69 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 # the patient view shows all patients in a selected repository
-class PatientView:
+class RepoView:
+	class PatientEditView:
+		def __init__(self, parent, repo, table):
+			gridLayout = QGridLayout()
+			self.table = table
+			self.idLabel = QLabel("-")
+			self.currentPatient = None
+			self.currentRow = 0
+			self.currentColumn = 0
+
+			gridLayout.addWidget(QLabel("Patient Id:"), 0, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.idLabel, 0, 1)
+
+			self.procCombo = QComboBox()
+			self.procCombo.addItems(repo.getPossibleProcedures())
+			self.procCombo.setEnabled(False)
+			self.procCombo.currentTextChanged.connect(self.procTextChanged)
+
+			gridLayout.addWidget(QLabel("Procedure:"), 1, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.procCombo, 1, 1)
+
+			self.runsLabel = QLabel("Number of Runs:")
+			gridLayout.addWidget(self.runsLabel, 2, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(QLabel("-"), 2, 1)
+
+			self.annotationLabel = QLabel("Contains Annotations:")
+			gridLayout.addWidget(self.annotationLabel, 3, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(QLabel("-"), 3, 1)
+
+			gridLayout.setColumnStretch	(1, 1)
+			gridLayout.setRowStretch	(4, 1)
+
+			parent.addLayout(gridLayout)
+
+		def setPatient(self, patient, row, column):
+			self.currentPatient = patient
+
+			print(str(row) + " " + str(column))
+			self.currentRow		= row
+			self.currentColumn	= column
+
+			self.procCombo.currentTextChanged.disconnect(self.procTextChanged)
+
+			if(patient is None):
+				self.idLabel 		.setText 		("-")
+				self.procCombo		.setCurrentText	("None")
+				self.runsLabel 		.setText 		("-")
+				self.annotationLabel.setText 		("-")
+				self.procCombo.setEnabled(False)
+			else:
+				self.idLabel 		.setText 		(str(patient.patientId))
+				self.procCombo		.setCurrentText	(patient.procedure)
+				self.runsLabel 		.setText 		(str(patient.numberOfRuns))
+				self.annotationLabel.setText 		(str(patient.containsAnnotations))
+				self.procCombo.setEnabled(True)		
+
+			self.procCombo.currentTextChanged.connect(self.procTextChanged)
+
+		def procTextChanged(self, text):
+			if(self.currentPatient is not None):
+				self.currentPatient.procedure = text
+				item = self.table.item(self.currentRow, self.currentColumn).setText(text)
+			
 	def __init__(self, myWidget, myToolBar, patientRepository):
 		self.repo 		= patientRepository
 		self.myToolBar 	= myToolBar
@@ -52,7 +114,12 @@ class PatientView:
 		selectionModel = self.patientTable.selectionModel()
 		selectionModel.selectionChanged.connect(self.selectionChanged)
 
-		boxLayout.addWidget(patientTable)
+		patientLayout = QHBoxLayout()
+
+		patientLayout.addWidget(patientTable)
+		self.patientEditView = RepoView.PatientEditView(patientLayout, self.repo, self.patientTable)
+
+		boxLayout.addLayout(patientLayout)
 		boxLayout.addWidget(QLabel("Patient Runs"))
 		boxLayout.addWidget(l)
 		
@@ -72,16 +139,18 @@ class PatientView:
 
 			if(columnSelected):
 				self.patientTable.sortItems(col)
-
-			if(rowSelected):
+				self.patientEditView.setPatient(None, 0, 0)
+			else:
 				# get patient associated with row
 				self.myList.clear()
+		
 				patient = self.patientTable.item(row, 0).data(Qt.UserRole)
-
+				self.patientEditView.setPatient(patient, row, 1)
+	
 				thumbs = patient.getRunThumbs()
 
 				for i in range(0, len(thumbs)):
 					self.myList.addItem(QListWidgetItem(thumbs[i].icon, thumbs[i].name))
-
+			
 	def remove(self):
 		pass
