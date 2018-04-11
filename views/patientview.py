@@ -8,6 +8,7 @@ class PatientView:
 		self.repo 		= patientRepository
 		self.myToolBar 	= myToolBar
 		self.myWidget 	= myWidget
+		self.myList		= None
 
 	def show(self):	
 		l = QListWidget(self.myWidget)
@@ -19,15 +20,10 @@ class PatientView:
 		l.setWrapping 	(False)
 		l.setResizeMode (QListWidget.Adjust)
 
-		l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 1"));
-		l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 2"));
-		l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 3"));
-		l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 4"));
-		l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 5"));
-		l.addItem(QListWidgetItem(QIcon("img/angio.jpg"),"Run 6"));
+		self.myList = l
 
 		# force height to be exactly 130
-		l.setFixedHeight(130)
+		l.setFixedHeight(140)
 
 		# layout the main panel
 		boxLayout = QVBoxLayout(self.myWidget)
@@ -38,11 +34,19 @@ class PatientView:
 		patientTable = QTableWidget(len(patients), 4)
 		patientTable.setHorizontalHeaderLabels(["Patient ID", "Procedure", "# of runs", "Annotations"])
 
+		# fill table and associate data
 		for i in range(0, len(patients)):
 			patientTable.setItem(i, 0, QTableWidgetItem(str(patients[i].patientId)))
+			patientTable.item 	(i, 0).setData(Qt.UserRole, patients[i])
+
 			patientTable.setItem(i, 1, QTableWidgetItem(str(patients[i].procedure)))
+			patientTable.item 	(i, 1).setData(Qt.UserRole, patients[i])
+			
 			patientTable.setItem(i, 2, QTableWidgetItem(str(patients[i].numberOfRuns)))
+			patientTable.item 	(i, 2).setData(Qt.UserRole, patients[i])
+
 			patientTable.setItem(i, 3, QTableWidgetItem(str(patients[i].containsAnnotations)))
+			patientTable.item 	(i, 3).setData(Qt.UserRole, patients[i])
 
 		self.patientTable = patientTable
 		selectionModel = self.patientTable.selectionModel()
@@ -54,7 +58,7 @@ class PatientView:
 		
 		self.myToolBar.addAction("Patient")
 
-	def hide(self):
+	def destroy(self):
 		pass
 
 	def selectionChanged(self, selected, deselected):
@@ -62,10 +66,22 @@ class PatientView:
 
 		if(len(modelIndexList) > 0):
 			col = modelIndexList[0].column()
-			columnSelected = self.patientTable.selectionModel().isColumnSelected(col, modelIndexList[0].parent())
-	
+			row = modelIndexList[0].row()
+			columnSelected 	= self.patientTable.selectionModel().isColumnSelected	(col, modelIndexList[0].parent())
+			rowSelected  	= self.patientTable.selectionModel().isRowSelected 		(row, modelIndexList[0].parent())
+
 			if(columnSelected):
 				self.patientTable.sortItems(col)
+
+			if(rowSelected):
+				# get patient associated with row
+				self.myList.clear()
+				patient = self.patientTable.item(row, 0).data(Qt.UserRole)
+
+				thumbs = patient.getRunThumbs()
+
+				for i in range(0, len(thumbs)):
+					self.myList.addItem(QListWidgetItem(thumbs[i].icon, thumbs[i].name))
 
 	def remove(self):
 		pass

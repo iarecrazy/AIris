@@ -13,7 +13,7 @@ from PyQt5.QtCore import *
 
 def createCentralWidget(mainWindow):
 	w = QWidget(mainWindow)
-	mainWin.setCentralWidgselectionChangedt(w)
+	mainWin.setCentralWidget(w)
 	return w
 
 def createNavigationToolBar(mainWindow):
