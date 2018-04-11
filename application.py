@@ -60,7 +60,7 @@ class Application:
 		self.itemListLabel = QLabel("Annotation Files")
 		self.itemList = QListWidget()
 
-		# create canvas for showing image in
+		# create canvas for showing image in 
 		self.imageView = ImageView()
 		self.imageView.loadImage("img/angio.jpg")
 		self.imageView.setBackgroundBrush(QBrush(Qt.black, Qt.SolidPattern));
