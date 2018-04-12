@@ -11,42 +11,36 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-def createCentralWidget(mainWindow):
-	w = QWidget(mainWindow)
-	mainWin.setCentralWidget(w)
-	return w
-
-def createNavigationToolBar(mainWindow):
-	# load the patient icon
-	t = QToolBar(mainWindow)
-	t.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-	# select data
-	t.addAction("Patient")
-
-	mainWindow.addToolBar(t)
-	return t
-
 if __name__ == '__main__':
+	# create the main application widget
 	app = QApplication(sys.argv)
 	app.setWindowIcon(QIcon("img/icon.png"))
 	
-	# create the main window
+	# create the main window & give it a default size, position & title
 	mainWin = QMainWindow()
 	mainWin.setGeometry(200, 100, 1000, 600)
 	mainWin.setWindowTitle("AIris")
 
-	# content widget
-	centralWidget 		= QWidget (mainWin)
+	# create the main toolbar
 	toolBar 			= QToolBar(mainWin)
 	toolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
 	mainWin.addToolBar(toolBar)
+
+	# create the main content widget & use BoxLayout to make
+	# sure its content stretch to max size
+	layout 		  = QHBoxLayout()
+	centralWidget = QWidget (mainWin)
+	centralWidget.setLayout(layout)
 	mainWin.setCentralWidget(centralWidget)
 
+	# create fake patientRepository
 	patientRepository = PatientRepositoryStub()
-	patientRepoView = RepoView(centralWidget, toolBar, patientRepository)
+
+	# create view on patientRepository & show its contents
+	patientRepoView = RepoView(centralWidget, layout, toolBar, patientRepository)
+	patientRepoView.create()
 	patientRepoView.show()
 
+	# show the main window & run the app
 	mainWin.show()
 	sys.exit(app.exec_())	

@@ -66,13 +66,19 @@ class RepoView:
 				self.currentPatient.procedure = text
 				item = self.table.item(self.currentRow, self.currentColumn).setText(text)
 			
-	def __init__(self, myWidget, myToolBar, patientRepository):
-		self.repo 		= patientRepository
-		self.myToolBar 	= myToolBar
-		self.myWidget 	= myWidget
-		self.myList		= None
+	def __init__(self, parentWidget, parentLayout, myToolBar, patientRepository):
+		self.repo 				= patientRepository
+		self.myToolBar 			= myToolBar
+		self.parentWidget 		= parentWidget
+		self.parentLayout 		= parentLayout
+		self.myWidget 			= QWidget(self.parentWidget)
+		self.myList				= None
+		self.myToolBarAction 	= None
 
-	def show(self):	
+		# keep it hidden until show is called
+		self.myWidget.hide()
+		
+	def create(self):
 		l = QListWidget(self.myWidget)
 
 		l.setViewMode 	(QListWidget.IconMode)
@@ -91,6 +97,9 @@ class RepoView:
 		boxLayout = QVBoxLayout(self.myWidget)
 		boxLayout.addWidget(QLabel(self.repo.name + ": " + self.repo.type))
 
+		# filter out the current procedures
+		boxLayout.addWidget(QLabel("Filter"))
+
 		# create patient table
 		patients = self.repo.getPatientList()
 		patientTable = QTableWidget(len(patients), 4)
@@ -98,6 +107,8 @@ class RepoView:
 
 		# fill table and associate data
 		for i in range(0, len(patients)):
+			# TODO: fix sorting for numbers by creating a special TableWidgetItem
+			# implemeting __lt__: https://stackoverflow.com/questions/7848683/how-to-sort-data-in-qtablewidget
 			patientTable.setItem(i, 0, QTableWidgetItem(str(patients[i].patientId)))
 			patientTable.item 	(i, 0).setData(Qt.UserRole, patients[i])
 
@@ -126,12 +137,23 @@ class RepoView:
 		
 		boxLayout.addLayout(patientLayout)
 		boxLayout.addWidget(QLabel("Patient Runs"))
-		boxLayout.addWidget(l)
-		
-		self.myToolBar.addAction("Patient")
+		boxLayout.addWidget(l)	
 
-	def destroy(self):
+	def cleanup(self):
+		# TODO: remove all widgets and all signal connect so python 
+		# can clean up memory
 		pass
+		
+	def show(self):	
+		self.myToolBarAction = self.myToolBar.addAction("Current Repository")
+		self.myToolBarAction.setEnabled(False)
+		self.parentLayout.addWidget(self.myWidget)
+		self.myWidget.show()
+
+	def hide(self):
+		self.myToolBar.removeAction(self.myToolBarAction )
+		self.myWidget.hide()
+		self.parentLayout.removeAt(self.myWidget)
 
 	def selectionChanged(self, selected, deselected):
 		modelIndexList = selected.indexes()
@@ -156,6 +178,3 @@ class RepoView:
 
 				for i in range(0, len(thumbs)):
 					self.myList.addItem(QListWidgetItem(thumbs[i].icon, thumbs[i].name))
-			
-	def remove(self):
-		pass

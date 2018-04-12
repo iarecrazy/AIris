@@ -2,6 +2,7 @@ import random
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+
 class RunThumb:
 	def __init__(self, name, icon):
 		self.name = name
