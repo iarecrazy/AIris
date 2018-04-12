@@ -44,9 +44,11 @@ class PatientRepository:
 
 class Job:
 	def __init__(self, status, owner, range):
+		self.jobId		= "No id"
+		self.name 		= "No name"
 		self.status 	= "None"
 		self.owner  	= "None"
-		self.dataRange 	= [0, 0]
+		self.patients   = []
 
 class PatientRepositoryStub(PatientRepository):
 	def __init__(self):
