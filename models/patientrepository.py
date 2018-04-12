@@ -34,12 +34,19 @@ class PatientRepository:
 		self.name 				= "Repository Base Class"
 		self.type 				= "None"
 		self.possibleProcedures = []
+		self.activeJobs			= []
 
 	def getPatientList(self):
 		return None
 
 	def getPossibleProcedures(self):
 		return self.possibleProcedures
+
+class Job:
+	def __init__(self, status, owner, range):
+		self.status 	= "None"
+		self.owner  	= "None"
+		self.dataRange 	= [0, 0]
 
 class PatientRepositoryStub(PatientRepository):
 	def __init__(self):
@@ -48,6 +55,7 @@ class PatientRepositoryStub(PatientRepository):
 		self.name 				= "Stub Repo Name"
 		self.type 				= "Stub Repo Type"
 		self.possibleProcedures = ["Unknown", "PCI", "TAVI",  "Aneurysm", "PAD", "Stroke", "Other"]
+		self.patients 			= None
 
 	def getPossibleProcedures(self):
 		return self.possibleProcedures
@@ -58,9 +66,12 @@ class PatientRepositoryStub(PatientRepository):
 		return Patient(int(random.random() * 100000), procedures[int(random.random() * len(procedures))], int(random.random() * 1000), random.random() < 0.5)
 
 	def getPatientList(self):
-		patients = []
+		if(self.patients is None):
+			patients = []
 
-		for i in range(0, int(random.random()*100) + 5):
-			patients.append(self.generateRandomPatient())
+			for i in range(0, int(random.random()*100) + 5):
+				patients.append(self.generateRandomPatient())
 
-		return patients
+			self.patients = patients
+
+		return self.patients

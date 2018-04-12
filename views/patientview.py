@@ -98,30 +98,36 @@ class RepoView:
 		boxLayout.addWidget(QLabel(self.repo.name + ": " + self.repo.type))
 
 		# filter out the current procedures
-		boxLayout.addWidget(QLabel("Filter"))
+		filterBox = QHBoxLayout()
+		filterBox.addWidget(QLabel("Filter on:"))
+
+		procBox = QComboBox()
+
+		procedureList = self.repo.getPossibleProcedures()
+		procedureListCombo = procedureList.copy()
+
+		procedureListCombo.append("All")
+
+		procBox.addItems(procedureListCombo)
+		procBox.setCurrentText("All")
+		procBox.currentTextChanged.connect(self.procedureFilterChanged)
+
+		filterBox.addWidget(procBox)
+		filterBox.addStretch(1)
+
+		boxLayout.addLayout(filterBox)
 
 		# create patient table
 		patients = self.repo.getPatientList()
-		patientTable = QTableWidget(len(patients), 4)
+		patientTable = QTableWidget(0, 4)
 		patientTable.setHorizontalHeaderLabels(["Patient ID", "Procedure", "# of runs", "Annotations"])
 
-		# fill table and associate data
-		for i in range(0, len(patients)):
-			# TODO: fix sorting for numbers by creating a special TableWidgetItem
-			# implemeting __lt__: https://stackoverflow.com/questions/7848683/how-to-sort-data-in-qtablewidget
-			patientTable.setItem(i, 0, QTableWidgetItem(str(patients[i].patientId)))
-			patientTable.item 	(i, 0).setData(Qt.UserRole, patients[i])
-
-			patientTable.setItem(i, 1, QTableWidgetItem(str(patients[i].procedure)))
-			patientTable.item 	(i, 1).setData(Qt.UserRole, patients[i])
-			
-			patientTable.setItem(i, 2, QTableWidgetItem(str(patients[i].numberOfRuns)))
-			patientTable.item 	(i, 2).setData(Qt.UserRole, patients[i])
-
-			patientTable.setItem(i, 3, QTableWidgetItem(str(patients[i].containsAnnotations)))
-			patientTable.item 	(i, 3).setData(Qt.UserRole, patients[i])
+		# disable table editting
+		patientTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 		self.patientTable = patientTable
+		self.populateTable("All", patientTable)
+
 		selectionModel = self.patientTable.selectionModel()
 		selectionModel.selectionChanged.connect(self.selectionChanged)
 
@@ -168,6 +174,7 @@ class RepoView:
 				self.patientTable.sortItems(col)
 				self.patientEditView.setPatient(None, 0, 0)
 			else:
+				# TODO: handle selecting multiple patients
 				# get patient associated with row
 				self.myList.clear()
 		
@@ -178,3 +185,49 @@ class RepoView:
 
 				for i in range(0, len(thumbs)):
 					self.myList.addItem(QListWidgetItem(thumbs[i].icon, thumbs[i].name))
+
+	def procedureFilterChanged(self, text):
+		print("changed")
+		nrOfRows = self.patientTable.rowCount()
+
+		for i in range(nrOfRows, 0):
+			self.patientTable.removeRow(i)
+
+		self.patientTable.clear()
+		self.patientTable.clearContents()
+		self.populateTable(text, self.patientTable)
+		pass
+
+	def populateTable(self, procFilter, table):
+		# create patient table
+		patients = self.repo.getPatientList()
+
+		tablePatientList = []
+
+		if(procFilter != "All"):
+			for i in range(0, len(patients)):
+				if(procFilter == patients[i].procedure):
+					tablePatientList.append(patients[i])
+		else:
+			tablePatientList = patients
+
+		print(len(tablePatientList))
+		print(len(patients))
+
+		table.setRowCount(len(tablePatientList))
+
+		# fill table and associate data
+		for i in range(0, len(tablePatientList)):
+			# TODO: fix sorting for numbers by creating a special TableWidgetItem
+			# implemeting __lt__: https://stackoverflow.com/questions/7848683/how-to-sort-data-in-qtablewidget
+			table.setItem(i, 0, QTableWidgetItem(str(tablePatientList[i].patientId)))
+			table.item 	(i, 0).setData(Qt.UserRole, tablePatientList[i])
+
+			table.setItem(i, 1, QTableWidgetItem(str(tablePatientList[i].procedure)))
+			table.item 	(i, 1).setData(Qt.UserRole, tablePatientList[i])
+			
+			table.setItem(i, 2, QTableWidgetItem(str(tablePatientList[i].numberOfRuns)))
+			table.item 	(i, 2).setData(Qt.UserRole, tablePatientList[i])
+
+			table.setItem(i, 3, QTableWidgetItem(str(tablePatientList[i].containsAnnotations)))
+			table.item 	(i, 3).setData(Qt.UserRole, tablePatientList[i])
