@@ -33,6 +33,7 @@ class PatientRepository:
 	def __init__(self):
 		self.name 				= "Repository Base Class"
 		self.type 				= "None"
+		self.repoUrl 			= "localhost"
 		self.possibleProcedures = []
 		self.activeJobs			= []
 
@@ -44,11 +45,13 @@ class PatientRepository:
 
 class Job:
 	def __init__(self, status, owner, range):
-		self.jobId		= "No id"
-		self.name 		= "No name"
-		self.status 	= "None"
-		self.owner  	= "None"
-		self.patients   = []
+		self.jobId			= "No id"
+		self.name 			= "No name"
+		self.description	= "Empty"
+		self.status 		= "None"
+		self.owner  		= "None"
+		self.currentPatient = None
+		self.patients   	= []
 
 class PatientRepositoryStub(PatientRepository):
 	def __init__(self):

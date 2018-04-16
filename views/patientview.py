@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 
 # the patient view shows all patients in a selected repository
 class RepoView:
-	class PatientEditView:
+	class JobCreationView:
 		def __init__(self, parent, repo, table):
 			gridLayout = QGridLayout()
 			self.table = table
@@ -12,6 +12,9 @@ class RepoView:
 			self.currentPatients	= None
 			self.currentRows		= set()
 			self.currentColumn 		= 0
+
+			self.jobGroupBox = QGroupBox("Create Annotation Job")
+			parent.addWidget(self.jobGroupBox)
 
 			gridLayout.addWidget(QLabel("Patient Id:"), 0, 0, 1, 1, Qt.AlignRight)
 			gridLayout.addWidget(self.idLabel, 0, 1)
@@ -36,10 +39,34 @@ class RepoView:
 			gridLayout.addWidget(QLabel("Contains Annotations:"), 3, 0, 1, 1, Qt.AlignRight)
 			gridLayout.addWidget(self.annotationLabel, 3, 1)
 
-			gridLayout.setColumnStretch	(1, 1)
-			gridLayout.setRowStretch	(4, 1)
+			self.jobDescription = QLineEdit("")
+			self.jobDescription.setEnabled(False)
+			gridLayout.addWidget(QLabel("Job Description:"), 4, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.jobDescription, 4, 1)
 
-			parent.addLayout(gridLayout)
+			gridLayout.setColumnStretch	(1, 1)
+			gridLayout.setRowStretch	(5, 1)
+
+			self.jobGroupBox.setLayout(gridLayout)
+
+			self.jobCreationButton 	= QPushButton("Create annotation job")
+			self.jobCreationButton.setEnabled(False)
+
+			buttonBox = QHBoxLayout()
+			buttonBox.addWidget(self.jobCreationButton)
+			parent.addLayout(buttonBox)
+
+		def enableControls(self, enabled):
+			self.jobCreationButton 	.setEnabled(enabled)
+			self.procCombo 			.setEnabled(enabled)
+			self.jobDescription 	.setEnabled(enabled)
+
+		def setControlState(self, enabled, idText, procText, runsText, annotationText):
+				self.idLabel 		.setText 		(idText)
+				self.procCombo		.setCurrentText	(procText)
+				self.runsLabel 		.setText 		(runsText)
+				self.annotationLabel.setText 		(annotationText)
+				self.enableControls(enabled)
 
 		def setPatient(self, patients, rows, column):
 			self.currentPatients 	= patients
@@ -49,26 +76,11 @@ class RepoView:
 			self.procCombo.currentTextChanged.disconnect(self.procTextChanged)
 
 			if(patients is None):
-				self.idLabel 		.setText 		("-")
-				self.procCombo		.setCurrentText	("None")
-				self.runsLabel 		.setText 		("-")
-				self.annotationLabel.setText 		("-")
-				self.procCombo.setEnabled(False)
+				self.setControlState(False, "-", "None", "-", "-")
 			elif(len(patients) > 1):
-				self.idLabel 		.setText 		("NA")
-
-				# multiple procedures?
-				self.procCombo		.setCurrentText	("Multiple")
-
-				self.runsLabel 		.setText 		("NA")
-				self.annotationLabel.setText 		("NA")
-				self.procCombo.setEnabled(True)		
+				self.setControlState(True, "NA", "Multiple", "NA", "NA")
 			else:
-				self.idLabel 		.setText 		(str(patients[0].patientId))
-				self.procCombo		.setCurrentText	(patients[0].procedure)
-				self.runsLabel 		.setText 		(str(patients[0].numberOfRuns))
-				self.annotationLabel.setText 		(str(patients[0].containsAnnotations))
-				self.procCombo.setEnabled(True)		
+				self.setControlState(True, str(patients[0].patientId), patients[0].procedure, str(patients[0].numberOfRuns), str(patients[0].containsAnnotations))
 
 			self.procCombo.currentTextChanged.connect(self.procTextChanged)
 
@@ -151,9 +163,9 @@ class RepoView:
 		patientLayout.setStretch(0, 1)
 		patientLayout.addLayout(rightPanel)
 
-		self.patientEditView = RepoView.PatientEditView(rightPanel, self.repo, self.patientTable)
+		self.jobCreationView 	= RepoView.JobCreationView(rightPanel, self.repo, self.patientTable)
 
-		rightPanel.addWidget(QLabel("test"))
+		# rightPanel.addWidget("Create New Job")
 		
 		boxLayout.addLayout(patientLayout)
 		boxLayout.addWidget(QLabel("Patient Runs"))
@@ -184,11 +196,11 @@ class RepoView:
 		if(len(modelIndexList) > 0):
 			col = modelIndexList[0].column()
 			row = modelIndexList[0].row()
-			entireColumnSelected 	= self.patientTable.selectionModel().isColumnSelected	(col, modelIndexList[0].parent())
+			entireColumnSelected 	= self.patientTable.selectionModel().isColumnSelected	(col, modelIndexList[0].parent())	
 
 			if(entireColumnSelected):
 				self.patientTable.sortItems(col)
-				self.patientEditView.setPatient(None, 0, 0)
+				self.jobCreationView.setPatient(None, 0, 0)
 
 			# get all the rows that were selected
 			selectedRows 	= self.getSelectedPatientsFromTable()
@@ -200,7 +212,7 @@ class RepoView:
 				# grab the patient from the row & add it to the list
 				patients.append(self.patientTable.item(row, 0).data(Qt.UserRole))
 
-				self.patientEditView.setPatient(patients, selectedRows, 1)
+				self.jobCreationView.setPatient(patients, selectedRows, 1)
 
 				# update thumbnail list if only one row is selected
 				if(oneRowSelected):
