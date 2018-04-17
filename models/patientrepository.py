@@ -44,14 +44,19 @@ class PatientRepository:
 		return self.possibleProcedures
 
 class Job:
-	def __init__(self, status, owner, range):
-		self.jobId			= "No id"
+	jobId = 0
+	def __init__(self, status, patientIds, description):
+		self.jobId			= str(jobId)
 		self.name 			= "No name"
-		self.description	= "Empty"
-		self.status 		= "None"
-		self.owner  		= "None"
-		self.currentPatient = None
-		self.patients   	= []
+		self.description	= description
+		self.status 		= status
+		self.currentPatient = patientIds[0]
+		self.currentRun		= 0
+		self.jobProgress	= 0
+
+		# make a copy of the list
+		self.patientIds   	= patientIds.copy()
+		jobId += 1
 
 class PatientRepositoryStub(PatientRepository):
 	def __init__(self):
@@ -61,6 +66,11 @@ class PatientRepositoryStub(PatientRepository):
 		self.type 				= "Stub Repo Type"
 		self.possibleProcedures = ["Unknown", "PCI", "TAVI",  "Aneurysm", "PAD", "Stroke", "Other"]
 		self.patients 			= None
+		self.jobs 				= []
+
+	def createJob(self, patientIds, description):
+		j = Job("created", patientIds, description)
+		self.jobs.append(j)
 
 	def getPossibleProcedures(self):
 		return self.possibleProcedures

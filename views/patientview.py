@@ -12,6 +12,7 @@ class RepoView:
 			self.currentPatients	= None
 			self.currentRows		= set()
 			self.currentColumn 		= 0
+			self.validJobName		= False
 
 			self.jobGroupBox = QGroupBox("Create Annotation Job")
 			parent.addWidget(self.jobGroupBox)
@@ -39,13 +40,21 @@ class RepoView:
 			gridLayout.addWidget(QLabel("Contains Annotations:"), 3, 0, 1, 1, Qt.AlignRight)
 			gridLayout.addWidget(self.annotationLabel, 3, 1)
 
+			self.jobName = QLineEdit("")
+			self.jobName.setEnabled(False)
+
+			self.jobName.textChanged.connect(self.jobTextChanged)
+
+			gridLayout.addWidget(QLabel("Job Name:"), 4, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.jobName, 4, 1)
+
 			self.jobDescription = QLineEdit("")
 			self.jobDescription.setEnabled(False)
-			gridLayout.addWidget(QLabel("Job Description:"), 4, 0, 1, 1, Qt.AlignRight)
-			gridLayout.addWidget(self.jobDescription, 4, 1)
+			gridLayout.addWidget(QLabel("Job Description:"), 5, 0, 1, 1, Qt.AlignRight)
+			gridLayout.addWidget(self.jobDescription, 5, 1)
 
 			gridLayout.setColumnStretch	(1, 1)
-			gridLayout.setRowStretch	(5, 1)
+			gridLayout.setRowStretch	(6, 1)
 
 			self.jobGroupBox.setLayout(gridLayout)
 
@@ -56,17 +65,23 @@ class RepoView:
 			buttonBox.addWidget(self.jobCreationButton)
 			parent.addLayout(buttonBox)
 
+		def jobTextChanged(self, text):
+			# text can only change if controls are enabled
+			self.validJobName = len(text) > 3
+			self.enableControls(True)
+
 		def enableControls(self, enabled):
-			self.jobCreationButton 	.setEnabled(enabled)
+			self.jobCreationButton 	.setEnabled(enabled and self.validJobName)
 			self.procCombo 			.setEnabled(enabled)
+			self.jobName 			.setEnabled(enabled)
 			self.jobDescription 	.setEnabled(enabled)
 
 		def setControlState(self, enabled, idText, procText, runsText, annotationText):
-				self.idLabel 		.setText 		(idText)
-				self.procCombo		.setCurrentText	(procText)
-				self.runsLabel 		.setText 		(runsText)
-				self.annotationLabel.setText 		(annotationText)
-				self.enableControls(enabled)
+			self.idLabel 		.setText 		(idText)
+			self.procCombo		.setCurrentText	(procText)
+			self.runsLabel 		.setText 		(runsText)
+			self.annotationLabel.setText 		(annotationText)
+			self.enableControls(enabled)
 
 		def setPatient(self, patients, rows, column):
 			self.currentPatients 	= patients
