@@ -14,7 +14,7 @@ from PyQt5.QtCore import *
 if __name__ == '__main__':
 	# create the main application widget
 	app = QApplication(sys.argv)
-	app.setWindowIcon(QIcon("img/icon.png"))
+	app.setWindowIcon(QIcon("img/logo.png"))
 	
 	# create the main window & give it a default size, position & title
 	mainWin = QMainWindow()
