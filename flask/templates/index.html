@@ -8,40 +8,50 @@
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
  -->	</head>
 	<body>
-	<div class="input-group mb-3">
-		<div class="input-group-addon">@</div>
-	  	<input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-	</div>
-<ul class="list-group">
-  <li class="list-group-item">New <span class="badge">12</span></li>
-  <li class="list-group-item">Deleted <span class="badge">5</span></li> 
-  <li class="list-group-item">Warnings <span class="badge">3</span></li> 
-</ul>
-<address>
-  <strong>Twitter, Inc.</strong><br>
-  1355 Market Street, Suite 900<br>
-  San Francisco, CA 94103<br>
-  <abbr title="Phone">P:</abbr> (123) 456-7890
-</address>
-<blockquote>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-  <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
-</blockquote>
+	
+		<!-- The Navigation Bar -->
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#">NAS</a>
+		    </div>
 
-		<div class="container">
-			<div class="row">
-				<form class="form-inline">
-				  <div class="form-group">
-				    <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
-				    <div class="input-group">
-				      <div class="input-group-addon">$</div>
-				      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount">
-				      <div class="input-group-addon">.00</div>
-				    </div>
-				  </div>
-				  <button type="submit" class="btn btn-primary">Transfer cash</button>
-				</form>
-			</div>
-		</div>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			
+		      <form class="navbar-form navbar-right">
+		        <div class="form-group">
+		          <input type="text" class="form-control" placeholder="Search">
+		        </div>
+		        <button type="submit" class="btn btn-default">Submit</button>
+		      </form>
+
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+
+		<!-- BreadCrumbs -->
+		<ol class="breadcrumb">
+	  		<li><a href="#">Overview</a></li>
+	  		<li><a href="#">Hospital</a></li>
+	  		<li><a href="#">Contract</a></li>
+	  		<li><a href="#">Room</a></li>
+	  		<li><a href="#">Patient</a></li>
+	  		<li class="active">Run</li>
+		</ol>
+
+		<address>
+		  <strong>Twitter, Inc.</strong><br>
+		  1355 Market Street, Suite 900<br>
+		  San Francisco, CA 94103<br>
+		  <abbr title="Phone">P:</abbr> (123) 456-7890
+		</address>
 	</body>
 </html>
