@@ -6,6 +6,9 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+@app.route('/Hospitals')
+	return render_template("hospitals.html")
+
 @app.route('/login')
 def login():
     return 'login'
@@ -15,4 +18,4 @@ def profile(username):
     return '{}\'s profile'.format(username)
 
 if __name__ == '__main__':
-	app.run()
+	app.run(host='0.0.0.0', port=6666, debug=True)
