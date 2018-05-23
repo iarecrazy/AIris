@@ -7,6 +7,7 @@ def index():
     return render_template("index.html")
 
 @app.route('/Hospitals')
+def list_hospitals():
 	return render_template("hospitals.html")
 
 @app.route('/login')
