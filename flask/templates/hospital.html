@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %} {{hospital}} {% endblock %}
 
+{% block refresh %}
+	<a href="/Hospitals/{{hospital}}/Refresh">Refresh</a>
+{% endblock %}
+
 {% block breadcrumb %}
 	<li><a href="#">Overview</a></li>
 	<li><a href="/Hospitals">Hospitals</a></li>
@@ -12,3 +16,4 @@
 	{{hospital}}
 
 {% endblock %}
+

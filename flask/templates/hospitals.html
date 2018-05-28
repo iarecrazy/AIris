@@ -1,15 +1,49 @@
 {% extends "base.html" %}
 {% block title %} Hospital Index {% endblock %}
 
+{% block refresh %}
+	<a href="Hospitals/Refresh">Refresh</a>
+{% endblock %}
+
 {% block breadcrumb %}
-	<li><a href="#">Overview</a></li>
+	<li><a href="/">Overview</a></li>
 	<li class="active">Hospitals</li>
 {% endblock %}
 
 {% block content %}
-	<ul>
-		{% for hospital in hospitals %}
-			<li> <a href='{{ url_for(request.endpoint) }}/{{ hospital }}'> {{ hospital }} </a> </li>
-		{% endfor %}
-	</ul>
+	<table class="table table-striped">
+  		<thead>
+     		<tr>
+		        <th>Select</th>
+		        <th>Hospital</th>
+		        <th># Grabber Actions</th>
+		        <th># Cases with Annotations</th>
+		     	<th># Cases</th>
+		        <th>Contracts</th>
+	      	</tr>
+	    </thead>
+	    <tbody>
+	   		{% for hospital in hospitals %}
+	      	<tr>
+	      		<td><input type="checkbox" name="{{ hospital }}" />&nbsp;</td>
+				<td><a href='/Hospitals/{{ hospital }}'> {{ hospital }}</a></td>
+				<td> {{ hospitals[hospital]['GrabberActions']|length }} </td>
+				<td> {{ hospitals[hospital]['NrOfAnnotatedCases'] }} </td>
+				<td> {{ hospitals[hospital]['NrOfCases'] }} </td>
+				<td>
+					<ul>
+						{% for action in hospitals[hospital]['GrabberActions'] %}
+							
+							{% for contract in hospitals[hospital]['GrabberActions'][action]['Contracts'] %}
+
+								<li><a href='/Hospitals/{{hospital}}/{{action}}/{{contract}}'> {{action}} - {{contract}} </a></li>
+							
+							{% endfor %}
+						{% endfor %}
+					</ul>
+				</td>
+		    </tr>
+			{% endfor %}	
+	    </tbody>
+	</table>
 {% endblock %}
