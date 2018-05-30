@@ -1,42 +1,89 @@
 {% extends "base.html" %}
 {% block title %} Hospital Index {% endblock %}
 
-{% block refresh %}
-	<a href="Hospitals/Refresh">Refresh</a>
-{% endblock %}
-
 {% block breadcrumb %}
-	<li><a href="/">Overview</a></li>
-	<li class="active">Hospitals</li>
+	<li class="active">Overview</li>
 {% endblock %}
 
 {% block content %}
+	<h3> Totals </h3>
+		<!-- Columns are always 50% wide, on mobile and desktop -->
+		<div class="row">
+		  	<div class="col-xs-1"><b>Cases</b></div>
+		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfCases'] }}</div>
+			<div class="col-xs-1"><b>Annotated Cases</b></div>
+		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfAnnotatedCases'] }}</div>
+		  	<div class="col-xs-1"><b>Runs</b></div>
+		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfRuns'] }}</div>
+		  	<div class="col-xs-1"><b>Annotated Runs</b></div>
+		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfAnnotatedRuns'] }}</div>
+		  	<div class="col-xs-1"><b>Coverage</b></div>
+		  	<div class="col-xs-1">{{ (index['GlobalStats']['NrOfAnnotatedRuns'] * 100 / index['GlobalStats']['NrOfRuns'] )| round}} %</div>
+		  	<div class="col-xs-1"></div>
+		  	<div class="col-xs-1"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-1"><b>FXD Runs</b></div>
+		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfFXDRuns'] }}</div>
+		  	<div class="col-xs-1"><b>DICOM Runs</b></div>
+		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfDICOMRuns'] }}</div>
+		  	<div class="col-xs-8"></div>
+		</div>
+	
+	<h3> Cases per Procedure </h3>
+		{% for key, val in index['GlobalStats']['ProcedureTypes'].items() %}			
+		<div class="row">
+			<div class="col-xs-1"><b>{{key}}</b></div>
+			<div class="col-xs-11">{{val}}</div>
+		</div>
+		{% endfor %}
+
+	
+	<h3> Statistics Per Hospital </h3>
 	<table class="table table-striped">
   		<thead>
      		<tr>
 		        <th>Select</th>
 		        <th>Hospital</th>
-		        <th># Grabber Actions</th>
-		        <th># Cases with Annotations</th>
-		     	<th># Cases</th>
+		        <th>Grabber Actions</th>
+		        <th>Runs</th>
+		        <th>Annotated Runs</th>
+		        <th>Annotation Coverage</th>
+		        <th>FXD Runs</th>
+		        <th>DICOM Runs</th>
+		        <th>Cases</th>
+		        <th>Annotated Cases</th>
+		        <th>Cases / Procedure</th>
 		        <th>Contracts</th>
 	      	</tr>
 	    </thead>
 	    <tbody>
-	   		{% for hospital in hospitals %}
+	   		{% for hospital in index['Hospitals'] %}
 	      	<tr>
 	      		<td><input type="checkbox" name="{{ hospital }}" />&nbsp;</td>
-				<td><a href='/Hospitals/{{ hospital }}'> {{ hospital }}</a></td>
-				<td> {{ hospitals[hospital]['GrabberActions']|length }} </td>
-				<td> {{ hospitals[hospital]['NrOfAnnotatedCases'] }} </td>
-				<td> {{ hospitals[hospital]['NrOfCases'] }} </td>
+				<td><a href=\'/Hospitals/{{ hospital['Name']}}\'> {{ hospital['Name'] }}</a></td>
+				<td> {{ hospital['GrabberActions']|length }} </td>
+				<td> {{ hospital['NrOfRuns'] }} </td>			
+				<td> {{ hospital['NrOfAnnotatedRuns'] }} </td>
+				<td> {{ (hospital['NrOfAnnotatedRuns'] * 100 / hospital['NrOfRuns'] )| round}} % </td>
+				<td> {{ hospital['NrOfFXDRuns'] }} </td>
+				<td> {{ hospital['NrOfDICOMRuns'] }} </td>
+				<td> {{ hospital['NrOfCases'] }} </td>
+				<td> {{ hospital['NrOfAnnotatedCases'] }} </td>
+				<td> 
+					<ul>
+						{% for key, val in hospital['ProcedureTypes'].items() %}
+							<li>{{key}}: {{val}}</li>
+						{% endfor %}
+					</ul>
+				</td>
 				<td>
 					<ul>
-						{% for action in hospitals[hospital]['GrabberActions'] %}
+						{% for action in hospital['GrabberActions'] %}
 							
-							{% for contract in hospitals[hospital]['GrabberActions'][action]['Contracts'] %}
+							{% for contract in hospital['GrabberActions'][action]['Contracts'] %}
 
-								<li><a href='/Hospitals/{{hospital}}/{{action}}/{{contract}}'> {{action}} - {{contract}} </a></li>
+								<li><a href='/{{hospital}}/{{action}}/{{contract}}'> {{action}} - {{contract}} </a></li>
 							
 							{% endfor %}
 						{% endfor %}

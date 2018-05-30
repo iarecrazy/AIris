@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} {{hospital}} {% endblock %}
+{% block title %} {{hospital['Name']}} {% endblock %}
 
 {% block refresh %}
 	<a href="/Hospitals/{{hospital}}/Refresh">Refresh</a>
@@ -8,12 +8,14 @@
 {% block breadcrumb %}
 	<li><a href="#">Overview</a></li>
 	<li><a href="/Hospitals">Hospitals</a></li>
-	<li class="active"> {{ hospital }} </li>
+	<li class="active"> {{hospital['Name']}} </li>
 {% endblock %}
 
 {% block content %}
-	
-	{{hospital}}
 
+	<ul>
+  		<li> Hospital Name: {{hospital['Name']}} </li>
+		<li> Number of Cases: {{ hospital['NrOfCases'] }} </li>
+		<li> Number of Runs: {{ hospital['NrOfRuns'] }} </li>
+	</ul>
 {% endblock %}
-
