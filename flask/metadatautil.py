@@ -157,3 +157,24 @@ def createNASIndex(hospitalRoot):
 		
 
 	return index
+
+def filter_on_procedure(hospitals, proceduretype):
+
+	cases = []
+
+	for hospital in hospitals:
+		for action in hospital['GrabberActions']:
+			rooms = hospital['GrabberActions'][action]['Rooms']
+			for room in rooms:
+				for key, case in rooms[room].items():
+					print(case, file=sys.stdout)
+
+					if 'Exam' in case['Description'] and case['Description']['Exam']['Type'] == proceduretype:
+						cases.append(
+							{ 
+								"Url": "/Hospital/" + hospital['Name'] + "/Action/" + str(action) + "/Room/" + room + "/Case/" + key,
+								"Case" : key,
+								"Description" : case['Description']
+							})
+
+	return cases

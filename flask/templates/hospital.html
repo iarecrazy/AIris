@@ -1,21 +1,64 @@
 {% extends "base.html" %}
 {% block title %} {{hospital['Name']}} {% endblock %}
 
-{% block refresh %}
-	<a href="/Hospitals/{{hospital}}/Refresh">Refresh</a>
-{% endblock %}
-
 {% block breadcrumb %}
-	<li><a href="#">Overview</a></li>
-	<li><a href="/Hospitals">Hospitals</a></li>
+	<li><a href="/">Overview</a></li>
 	<li class="active"> {{hospital['Name']}} </li>
 {% endblock %}
 
 {% block content %}
+	<div class="row">
+		<div class="col-xs-4">
+			<h3> Summary </h3>
+				<!-- Columns are always 50% wide, on mobile and desktop -->
+				<div class="row">
+				  	<div class="col-xs-6"><b>Cases</b></div>
+				  	<div class="col-xs-6">{{ hospital['NrOfCases'] }}</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6"><b>Annotated Cases</b></div>
+				  	<div class="col-xs-6">{{ hospital['NrOfAnnotatedCases'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>Runs</b></div>
+				  	<div class="col-xs-6">{{ hospital['NrOfRuns'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>Annotated Runs</b></div>
+				  	<div class="col-xs-6">{{ hospital['NrOfAnnotatedRuns'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>Annotation Coverage</b></div>
+				  	<div class="col-xs-6">{{ (hospital['NrOfAnnotatedRuns'] * 100 / hospital['NrOfRuns'] )| round}} %</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6"><b>FXD Runs</b></div>
+				  	<div class="col-xs-6">{{ hospital['NrOfFXDRuns'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>DICOM Runs</b></div>
+				  	<div class="col-xs-6">{{ hospital['NrOfDICOMRuns'] }}</div>
+				</div>
+		</div>
+		<div class="col-xs-4">
+			<h3> Cases per Procedure </h3>
+				{% for key, val in hospital['ProcedureTypes'].items() %}			
+				<div class="row">
+					<div class="col-xs-6"><b>{{key}}</b></div>
+					<div class="col-xs-6">{{val}}</div>
+				</div>
+				{% endfor %}
+		</div>
+		<div class="col-xs-4">
 
-	<ul>
-  		<li> Hospital Name: {{hospital['Name']}} </li>
-		<li> Number of Cases: {{ hospital['NrOfCases'] }} </li>
-		<li> Number of Runs: {{ hospital['NrOfRuns'] }} </li>
-	</ul>
+			<h3> Popular Case Tags </h3>
+				{% for key, val in populartags %}			
+				<div class="row">
+					<div class="col-xs-6"><b>{{key}}</b></div>
+					<div class="col-xs-6">{{val}}</div>
+				</div>
+				{% endfor %}
+		</div>
+	</div>
+
 {% endblock %}

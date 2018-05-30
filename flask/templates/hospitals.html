@@ -6,38 +6,59 @@
 {% endblock %}
 
 {% block content %}
-	<h3> Totals </h3>
-		<!-- Columns are always 50% wide, on mobile and desktop -->
-		<div class="row">
-		  	<div class="col-xs-1"><b>Cases</b></div>
-		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfCases'] }}</div>
-			<div class="col-xs-1"><b>Annotated Cases</b></div>
-		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfAnnotatedCases'] }}</div>
-		  	<div class="col-xs-1"><b>Runs</b></div>
-		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfRuns'] }}</div>
-		  	<div class="col-xs-1"><b>Annotated Runs</b></div>
-		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfAnnotatedRuns'] }}</div>
-		  	<div class="col-xs-1"><b>Coverage</b></div>
-		  	<div class="col-xs-1">{{ (index['GlobalStats']['NrOfAnnotatedRuns'] * 100 / index['GlobalStats']['NrOfRuns'] )| round}} %</div>
-		  	<div class="col-xs-1"></div>
-		  	<div class="col-xs-1"></div>
+	<div class="row">
+		<div class="col-xs-4">
+			<h3> Summary </h3>
+				<!-- Columns are always 50% wide, on mobile and desktop -->
+				<div class="row">
+				  	<div class="col-xs-6"><b>Cases</b></div>
+				  	<div class="col-xs-6">{{ index['GlobalStats']['NrOfCases'] }}</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6"><b>Annotated Cases</b></div>
+				  	<div class="col-xs-6">{{ index['GlobalStats']['NrOfAnnotatedCases'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>Runs</b></div>
+				  	<div class="col-xs-6">{{ index['GlobalStats']['NrOfRuns'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>Annotated Runs</b></div>
+				  	<div class="col-xs-6">{{ index['GlobalStats']['NrOfAnnotatedRuns'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>Coverage</b></div>
+				  	<div class="col-xs-6">{{ (index['GlobalStats']['NrOfAnnotatedRuns'] * 100 / index['GlobalStats']['NrOfRuns'] )| round}} %</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6"><b>FXD Runs</b></div>
+				  	<div class="col-xs-6">{{ index['GlobalStats']['NrOfFXDRuns'] }}</div>
+				</div>
+				<div class="row">
+				  	<div class="col-xs-6"><b>DICOM Runs</b></div>
+				  	<div class="col-xs-6">{{ index['GlobalStats']['NrOfDICOMRuns'] }}</div>
+				</div>
 		</div>
-		<div class="row">
-			<div class="col-xs-1"><b>FXD Runs</b></div>
-		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfFXDRuns'] }}</div>
-		  	<div class="col-xs-1"><b>DICOM Runs</b></div>
-		  	<div class="col-xs-1">{{ index['GlobalStats']['NrOfDICOMRuns'] }}</div>
-		  	<div class="col-xs-8"></div>
+		<div class="col-xs-4">
+			<h3> Cases per Procedure </h3>
+				{% for key, val in index['GlobalStats']['ProcedureTypes'].items() %}			
+				<div class="row">
+					<div class="col-xs-6"><b><a href="/Filter/Hospital/All/ProcedureType/{{key}}/Tags/All">{{key}}</a></b></div>
+					<div class="col-xs-6">{{val}}</div>
+				</div>
+				{% endfor %}
 		</div>
-	
-	<h3> Cases per Procedure </h3>
-		{% for key, val in index['GlobalStats']['ProcedureTypes'].items() %}			
-		<div class="row">
-			<div class="col-xs-1"><b>{{key}}</b></div>
-			<div class="col-xs-11">{{val}}</div>
-		</div>
-		{% endfor %}
+		<div class="col-xs-4">
 
+			<h3> Popular Case Tags </h3>
+				{% for key, val in populartags %}			
+				<div class="row">
+					<div class="col-xs-6"><b>{{key}}</b></div>
+					<div class="col-xs-6">{{val}}</div>
+				</div>
+				{% endfor %}
+		</div>
+	</div>
 	
 	<h3> Statistics Per Hospital </h3>
 	<table class="table table-striped">
@@ -60,8 +81,8 @@
 	    <tbody>
 	   		{% for hospital in index['Hospitals'] %}
 	      	<tr>
-	      		<td><input type="checkbox" name="{{ hospital }}" />&nbsp;</td>
-				<td><a href=\'/Hospitals/{{ hospital['Name']}}\'> {{ hospital['Name'] }}</a></td>
+	      		<td><input type="checkbox" name="{{ hospital['Name'] }}" />&nbsp;</td>
+				<td><a href="/Hospital/{{ hospital['Name']}}"> {{ hospital['Name'] }}</a></td>
 				<td> {{ hospital['GrabberActions']|length }} </td>
 				<td> {{ hospital['NrOfRuns'] }} </td>			
 				<td> {{ hospital['NrOfAnnotatedRuns'] }} </td>
@@ -79,13 +100,14 @@
 				</td>
 				<td>
 					<ul>
-						{% for action in hospital['GrabberActions'] %}
+						{% for action, value in hospital['GrabberActions'].items() %}
 							
 							{% for contract in hospital['GrabberActions'][action]['Contracts'] %}
 
-								<li><a href='/{{hospital}}/{{action}}/{{contract}}'> {{action}} - {{contract}} </a></li>
+								<li><a href="/Contract/{{hospital['Name']}}/{{action}}/{{contract}}"> {{action}} - {{contract}} </a></li>
 							
 							{% endfor %}
+
 						{% endfor %}
 					</ul>
 				</td>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %} Filter on {{proceduretype}} {% endblock %}
+
+{% block breadcrumb %}
+	<li><a href="/">Overview</a></li>
+	<li class="active"> Filter on {{proceduretype}} </li>
+{% endblock %}
+
+{% block content %}
+	
+	<h3> Filter results: </h3>
+
+		{% for case in cases %}
+		<div class="media">
+		  <div class="media-left">
+		    <a href="#">
+		      <img class="media-object" src="..." alt="...">
+		    </a>
+		  </div>
+		  <div class="media-body">
+		    <h4 class="media-heading">{{case['Url']}}</h4>
+		    <b>Type:</b>{{case['Description']['Exam']['Type']}}
+		    <b>Tags:</b>{{case['Description']['Tags']}}
+		  </div>
+		</div>
+		{% endfor %}
+{% endblock %}
