@@ -63,23 +63,23 @@ def show_hospital(hospitalname):
 
 	return abort(404)
 
-@app.route('/Filter/Hospital/<hospital>/ProcedureType/<proceduretype>/Tags/<tags>')
-def show_procedure_type_cases(hospital, proceduretype, tags):
+@app.route('/Filter/Hospital/<hospitalname>/ProcedureType/<proceduretype>/Tags/<tags>')
+def show_procedure_type_cases(hospitalname, proceduretype, tags):
 	index = loadOrCreateIndex(app.config['root_dir'], app.config['path_to_index'])
 
 	hospitals = []
 
-	if hospital == 'All':
+	if hospitalname == 'All':
 		hospitals = index['Hospitals']
 	else:
 		for hospital in index['Hospitals']:
-			if hospital['Name'] == hospital:
+			if hospital['Name'] == hospitalname:
 				hospitals = [ hospital ]
 				break 
 
-	cases = filter_on_procedure(hospitals, proceduretype)
+	cases = filter_on_procedure(hospitals, proceduretype, tags)
 
-	return render_template("caseview.html", proceduretype=proceduretype, cases=cases)
+	return render_template("caseview.html", hospitalname=hospitalname, proceduretype=proceduretype, tags=tags, cases=cases)
 
 @app.route('/Contract/<hospitalname>/<grabberaction>/<contract>', methods=['GET', 'POST'])
 def downloadContract(hospitalname, grabberaction, contract):

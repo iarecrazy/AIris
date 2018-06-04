@@ -44,7 +44,7 @@
 			<h3> Cases per Procedure </h3>
 				{% for key, val in hospital['ProcedureTypes'].items() %}			
 				<div class="row">
-					<div class="col-xs-6"><b>{{key}}</b></div>
+					<div class="col-xs-6"><b><a href="/Filter/Hospital/{{hospital['Name']}}/ProcedureType/{{key}}/Tags/All">{{key}}</a></b></div>
 					<div class="col-xs-6">{{val}}</div>
 				</div>
 				{% endfor %}
@@ -54,7 +54,7 @@
 			<h3> Popular Case Tags </h3>
 				{% for key, val in populartags %}			
 				<div class="row">
-					<div class="col-xs-6"><b>{{key}}</b></div>
+					<div class="col-xs-6"><b><a href="/Filter/Hospital/{{hospital['Name']}}/ProcedureType/All/Tags/{{key}}">{{key}}</a></b></div>
 					<div class="col-xs-6">{{val}}</div>
 				</div>
 				{% endfor %}

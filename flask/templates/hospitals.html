@@ -53,7 +53,7 @@
 			<h3> Popular Case Tags </h3>
 				{% for key, val in populartags %}			
 				<div class="row">
-					<div class="col-xs-6"><b>{{key}}</b></div>
+					<div class="col-xs-6"><b><a href="/Filter/Hospital/All/ProcedureType/All/Tags/{{key}}">{{key}}</a></b></div>
 					<div class="col-xs-6">{{val}}</div>
 				</div>
 				{% endfor %}
@@ -86,7 +86,11 @@
 				<td> {{ hospital['GrabberActions']|length }} </td>
 				<td> {{ hospital['NrOfRuns'] }} </td>			
 				<td> {{ hospital['NrOfAnnotatedRuns'] }} </td>
-				<td> {{ (hospital['NrOfAnnotatedRuns'] * 100 / hospital['NrOfRuns'] )| round}} % </td>
+				<td>
+					{% if hospital['NrOfRuns']|int > 0 %} 
+						{{ (hospital['NrOfAnnotatedRuns'] * 100 / hospital['NrOfRuns'] )| round}} % 
+					{% endif %}
+				</td>
 				<td> {{ hospital['NrOfFXDRuns'] }} </td>
 				<td> {{ hospital['NrOfDICOMRuns'] }} </td>
 				<td> {{ hospital['NrOfCases'] }} </td>

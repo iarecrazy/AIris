@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %} Filter on {{proceduretype}} {% endblock %}
+{% block title %} Filter on {{hospitalname}} - {{proceduretype}} - {{tags}} {% endblock %}
 
 {% block breadcrumb %}
 	<li><a href="/">Overview</a></li>
-	<li class="active"> Filter on {{proceduretype}} </li>
+	{% if hospitalname != "All" %}
+  		<li><a href="/Hospital/{{hospitalname}}">{{hospitalname}}</a></li>
+	{% endif %}
+	<li class="active"> Filter on {{hospitalname}} - {{proceduretype}} - {{tags}} </li>
 {% endblock %}
 
 {% block content %}
 	
-	<h3> Filter results: </h3>
+	<h3> Found {{cases|length}} cases </h3>
 
 		{% for case in cases %}
 		<div class="media">

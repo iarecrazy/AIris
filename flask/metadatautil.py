@@ -158,7 +158,12 @@ def createNASIndex(hospitalRoot):
 
 	return index
 
-def filter_on_procedure(hospitals, proceduretype):
+# Python program to illustrate the intersection
+# of two lists using set() method
+def intersection(lst1, lst2):
+    return list(set(lst1) & set(lst2))
+
+def filter_on_procedure(hospitals, proceduretype, tags):
 
 	cases = []
 
@@ -167,14 +172,20 @@ def filter_on_procedure(hospitals, proceduretype):
 			rooms = hospital['GrabberActions'][action]['Rooms']
 			for room in rooms:
 				for key, case in rooms[room].items():
-					print(case, file=sys.stdout)
 
-					if 'Exam' in case['Description'] and case['Description']['Exam']['Type'] == proceduretype:
-						cases.append(
-							{ 
-								"Url": "/Hospital/" + hospital['Name'] + "/Action/" + str(action) + "/Room/" + room + "/Case/" + key,
-								"Case" : key,
-								"Description" : case['Description']
-							})
+					if 'Exam' in case['Description'] and (case['Description']['Exam']['Type'] == proceduretype or proceduretype == 'All'):
+						casetags = list(case['Description']['Tags'])
+						casetags.append('All')
+
+						tagsintersection = intersection(casetags, tags.split(','))
+						print(tagsintersection)
+
+						if len(tagsintersection) > 0:
+							cases.append(
+								{ 
+									"Url": "/Hospital/" + hospital['Name'] + "/Action/" + str(action) + "/Room/" + room + "/Case/" + key,
+									"Case" : key,
+									"Description" : case['Description']
+								})
 
 	return cases
