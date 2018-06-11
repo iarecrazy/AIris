@@ -10,8 +10,8 @@ from flask import Flask, url_for, render_template, abort, send_from_directory, r
 # debug = true
 
 app = Flask(__name__)
-app.config['root_dir'] = 'X:/'
-app.config['tmp_dir'] = 'C:/Temp'
+app.config['root_dir'] = '/mnt/Clean'
+app.config['tmp_dir'] = '/tmp'
 app.config['path_to_index'] = os.path.join(app.config['tmp_dir'], 'index.json')
 
 @app.route('/')
