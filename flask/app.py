@@ -7,12 +7,7 @@ from fileutils import *
 
 from flask import Flask, url_for, render_template, abort, send_from_directory, redirect
 
-# debug = true
-
 app = Flask(__name__)
-app.config['root_dir'] = '/mnt/Clean'
-app.config['tmp_dir'] = '/tmp'
-app.config['path_to_index'] = os.path.join(app.config['tmp_dir'], 'index.json')
 
 @app.route('/')
 def index():
@@ -87,6 +82,3 @@ def downloadContract(hospitalname, grabberaction, contract):
     grabberdir 		= os.path.join(hospitaldir, grabberaction)
     contractfile 	= os.path.join(grabberdir, contract)
     return send_from_directory(grabberdir, contract, as_attachment=True)
-
-if __name__ == '__main__':
-	app.run()
